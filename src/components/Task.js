@@ -4,13 +4,16 @@ import commomStyles from '../commonStyles'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default props =>{
+const doneOrNotStyles = props.doneAt != null ?
+{textDecorationLine: 'line-through'} : {}
+
   return(
     <View style={styles.conteiner}>
       <View style={styles.checkconteiner}>
         {getCheckView(props.doneAt)}
       </View>
       <View>
-          <Text>{props.desc}</Text>
+          <Text style={[styles.desc, doneOrNotStyles]}>{props.desc}</Text>
           <Text>{props.estameAt + ""}</Text>
       </View>
     </View>
@@ -57,5 +60,12 @@ done:{
   alignItems:'center',
   justifyContent:'center',
 },
+desc:{
+  fontFamily: commomStyles.fontFamily,
+  color: commomStyles.colors.mainText,
+  fontSize: 15,
+
+
+}
 
 })
