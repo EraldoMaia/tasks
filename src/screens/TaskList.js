@@ -1,14 +1,16 @@
 import React, {Component} from 'react'
-import {Text, View, ImageBackground, StyleSheet, FlatList} from 'react-native'
+import {Text, View, ImageBackground, StyleSheet, FlatList, TouchableOpacity, Platform} from 'react-native'
 import todayImage from '../../assets/imgs/today.jpg'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import commonStyles from '../commonStyles'
 import Task from '../components/Task'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default class TaskList extends Component{
 
   state = {
+    showDoneTasks: true,
     tasks: [{
         id: Math.random(),
         desc: 'Analisar dados, Enel!',
@@ -23,11 +25,32 @@ export default class TaskList extends Component{
   },
   ]
   }
+
+  toggleFilter = () =>{
+    this.setState({showDoneTasks:!this.state.showDoneTasks})
+  }
+
+  toggleTask = taskId =>{
+    const tasks = [...this.state.tasks]
+    tasks.forEach(task => {
+      if(task.id === taskId){
+        task.doneAt = task.doneAt ? null : new Date()
+      }
+    })
+    this.setState({tasks})
+  }
+
   render(){
   const hoje = moment().locale('pt-br').format('ddd, D[ de] MMM')
     return(
       <View style={styles.container}>
         <ImageBackground source={todayImage} style={styles.backgound}>
+          <View style={styles.iconBar}>
+            <TouchableOpacity onPress={this.toggleFilter}>
+              <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
+              size={20} color={commonStyles.colors.secondary}/>
+            </TouchableOpacity>
+          </View>
           <View style={styles.barradetitulos}>
             <Text style={styles.title}>Hoje</Text>
             <Text style={styles.subtitle}>{hoje}</Text>
@@ -36,7 +59,8 @@ export default class TaskList extends Component{
           <View style={styles.Tasklist}>
             <FlatList data={this.state.tasks}
             keyExtractor={item => `${item.id}`}
-            renderItem={({item}) => <Task {...item}/>} />
+            renderItem={({item}) => <Task {...item} 
+            toggleTask={this.toggleTask}/>} />
           </View>
         </View>
     )
@@ -71,4 +95,10 @@ const styles = StyleSheet.create({
     marginLeft:20,
     marginBottom:20,
   },
+  iconBar:{
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    justifyContent: 'flex-end',
+    marginTop: Platform.OS === 'ios' ? 40 : 10,
+  }
 })
