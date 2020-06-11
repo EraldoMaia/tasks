@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   Platform,
+  TouchableOpacityBase,
 } from 'react-native';;
 import todayImage from '../../assets/imgs/today.jpg';
 import moment from 'moment';
@@ -19,7 +20,7 @@ import AddTask from './AddTask';
 export default class TaskList extends Component {
   state = {
     showDoneTasks: true,
-    showAddTask: true,
+    showAddTask: false,
     visibleTasks: [],
 
     tasks: [
@@ -62,17 +63,16 @@ export default class TaskList extends Component {
         task.doneAt = task.doneAt ? null : new Date();
       }
     });
-    this.setState({tasks}, this.filterTasks);;
+    this.setState({tasks}, this.filterTasks)
   };
 
   render() {
     const hoje = moment()
       .locale('pt-br')
-      .format('ddd, D[ de] MMM');;
+      .format('ddd, D[ de] MMM')
     return (
       <View style={styles.container}>
-        <AddTask isVisible={this.state.showAddTask}
-         onCancel={() => this.setState({showAddTask: false})}/>
+        <AddTask isVisible={this.state.showAddTask} onCancel={() => this.setState({showAddTask: false})}/>
         <ImageBackground source={todayImage} style={styles.backgound}>
           <View style={styles.iconBar}>
             <TouchableOpacity onPress={this.toggleFilter}>
@@ -97,6 +97,11 @@ export default class TaskList extends Component {
             )}
           />
         </View>
+        <TouchableOpacity style={styles.addButton} 
+        onPress={()=> this.setState({showAddTask:true})}
+        activeOpacity={0.7}>
+          <Icon name='plus' size={20} color={commonStyles.colors.secondary}/>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -135,5 +140,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     justifyContent: 'flex-end',
     marginTop: Platform.OS === 'ios' ? 40 : 10,
+  },
+  addButton:{
+    position:'absolute',
+    right: 30,
+    bottom: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: commonStyles.colors.today,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
