@@ -5,11 +5,13 @@ import {Text,
   TouchableWithoutFeedback,
   TouchableOpacity,
   TextInput,
-  StyleSheet} from 'react-native'
+  StyleSheet,
+  Platform} from 'react-native'
 import commonStyles from '../commonStyles';
+import moment from 'moment'
 import DateTimePicker from '@react-native-community/datetimepicker'
 
-const initialState = {desc: '', date: new Date()}
+const initialState = {desc: '', date: new Date(), showDatePicker: false}
 
 
 
@@ -17,10 +19,29 @@ export default class AddTask extends Component{
   state={
     ...initialState
   }
-  
-  getDateTimePicker = () => {
-    return (<DateTimePicker value={this.state.date}
-    onChange={(_, date) => this.setState({date})} mode='date'/>)
+
+  getDatePicker = () => {
+    let datePicker = <DateTimePicker value={this.state.date}
+    onChange={(_, date) => 
+      this.setState({date,showDatePicker: false})} mode='date'/>
+
+      const dateString = moment(this.state.date).format('dddd, D [de] MMMM [de] YYYY')
+
+    if(Platform.OS === 'android')
+    {
+      datePicker = (
+        <View>
+            <TouchableOpacity onPress={()=>this.setState({showDatePicker: true})}>
+              <Text style={styles.date}>
+                {dateString}
+              </Text>
+            </TouchableOpacity>
+            {this.state.showDatePicker && datePicker}
+        </View>
+      )
+    }
+    
+    return datePicker
   }
 
   render(){
@@ -37,7 +58,7 @@ export default class AddTask extends Component{
             placeholder='Informe a Descrição...'
             onChangeText={desc => this.setState({desc})}
             value={this.state.desc}/>
-            {this.getDateTimePicker()}
+            {this.getDatePicker()}
             <View style={styles.buttons}>
             <TouchableOpacity onPress={this.props.onCancel}>
               <Text style={styles.button}>Cancelar</Text>
@@ -89,5 +110,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e3e3e3',
     borderRadius: 9,
+  },
+  date:{
+    fontFamily: commonStyles.fontFamily,
+    fontSize: 20,
+    marginLeft: 15,
+    textAlign: 'center',
   },
 })
