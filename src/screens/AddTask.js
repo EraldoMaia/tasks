@@ -7,14 +7,22 @@ import {Text,
   TextInput,
   StyleSheet} from 'react-native'
 import commonStyles from '../commonStyles';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
-const initialState = {desc: ''}
+const initialState = {desc: '', date: new Date()}
+
+
 
 export default class AddTask extends Component{
   state={
     ...initialState
   }
   
+  getDateTimePicker = () => {
+    return (<DateTimePicker value={this.state.date}
+    onChange={(_, date) => this.setState({date})} mode='date'/>)
+  }
+
   render(){
     return(
       <Modal transparent={true} visible={this.props.isVisible}
@@ -29,6 +37,7 @@ export default class AddTask extends Component{
             placeholder='Informe a Descrição...'
             onChangeText={desc => this.setState({desc})}
             value={this.state.desc}/>
+            {this.getDateTimePicker()}
             <View style={styles.buttons}>
             <TouchableOpacity onPress={this.props.onCancel}>
               <Text style={styles.button}>Cancelar</Text>
