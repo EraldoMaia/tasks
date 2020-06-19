@@ -1,5 +1,13 @@
 import React from 'react'
-import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
+import {
+   View,
+   Text,
+   StyleSheet,
+   TouchableWithoutFeedback,
+   TouchableOpacity,
+   TouchableOpacityBase,
+  } from 'react-native'
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 import commomStyles from '../commonStyles'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import moment from 'moment'
@@ -14,8 +22,17 @@ const date = props.doneAt ? props.doneAt : props.estameAt
 const formattedDate = moment(date).locale('pt-br')
 .format('ddd, D[ de] MMM')
 
+const getRigthContent = () => {
   return(
-    <View style={styles.conteiner}>
+    <TouchableOpacity style={styles.rigth}>
+      <Icon name='trash' size={30} color='#FFF'/>
+    </TouchableOpacity>
+  )
+}
+
+  return(
+    <Swipeable renderLeftActions={getRigthContent}>
+          <View style={styles.conteiner}>
       <TouchableWithoutFeedback onPress={() => props.toggleTask(props.id)}>
         <View style={styles.checkconteiner}>
           {getCheckView(props.doneAt)}
@@ -25,7 +42,9 @@ const formattedDate = moment(date).locale('pt-br')
           <Text style={[styles.desc, doneOrNotStyles]}>{props.desc}</Text>
           <Text style={styles.date}>{formattedDate  + ""}</Text>
       </View>
-    </View>
+      </View>
+    </Swipeable>
+
   )
 }
 
@@ -78,6 +97,13 @@ date:{
   fontFamily: commomStyles.fontFamily,
   color: commomStyles.colors.subText,
   fontSize: 12,
+},
+rigth:{
+  backgroundColor: 'red',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  paddingHorizontal: 20,
 },
 
 })
