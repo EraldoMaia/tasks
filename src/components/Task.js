@@ -24,14 +24,27 @@ const formattedDate = moment(date).locale('pt-br')
 
 const getRigthContent = () => {
   return(
-    <TouchableOpacity style={styles.rigth}>
+    <TouchableOpacity style={styles.rigth} 
+    onPress={()=> props.onDelete && props.onDelete(props.id)}>
       <Icon name='trash' size={30} color='#FFF'/>
     </TouchableOpacity>
   )
 }
 
+const getLeftContent = () => {
   return(
-    <Swipeable renderLeftActions={getRigthContent}>
+    <TouchableOpacity style={styles.left}>
+      <Icon name='trash' size={30} color='#FFF'
+       style={styles.excludeIcon}/>
+      <Text style={styles.excludeText}>Excluir</Text>
+    </TouchableOpacity>
+  )
+}
+
+  return(
+    <Swipeable renderRightActions={getRigthContent}
+               renderLeftActions={getLeftContent}
+onSwipeableLeftOpen={()=> props.onDelete && props.onDelete(props.id)}>
           <View style={styles.conteiner}>
       <TouchableWithoutFeedback onPress={() => props.toggleTask(props.id)}>
         <View style={styles.checkconteiner}>
@@ -65,6 +78,7 @@ conteiner:{
   borderBottomWidth: 1,
   alignItems: 'center',
   paddingVertical: 15,
+  backgroundColor: '#fff',
 },
 checkconteiner:{
   width: '20%',
@@ -105,5 +119,19 @@ rigth:{
   justifyContent: 'flex-end',
   paddingHorizontal: 20,
 },
-
+left:{
+  flex: 1,
+  backgroundColor: 'red',
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+excludeText:{
+  fontFamily: commomStyles.fontFamily,
+  color: '#fff',
+  fontSize: 20,
+  margin: 10,
+},
+excludeIcon:{
+  marginLeft: 10,
+}
 })
