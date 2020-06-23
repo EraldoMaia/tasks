@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {ImageBackground, Text, StyleSheet, View, TextInput,
         TouchableOpacity,
         Platform,
+        Alert,
         } from 'react-native'
 
 import commonStyles from '../commonStyles'
@@ -13,7 +14,15 @@ export default class Auth extends Component{
       email: '',
       password: '',
       confirmPassword: '',
-      stageNew: true,
+      stageNew: false,
+  }
+
+  siginOrSignup = () => {
+    if (this,state.stageNew){
+      Alert.alert('Sucesso!', 'Criar conta!')
+    }else{
+      Alert.alert('Sucesso!', 'Logar!')
+    }
   }
 
   render(){
@@ -38,14 +47,18 @@ export default class Auth extends Component{
             <TextInput placeholder='Confirme a Senha' value={this.state.confirmPassword} style={styles.input}
             onChangeText={confirmPassword=> this.setState({confirmPassword})} secureTextEntry={true}/>
             }
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.siginOrSignup}>
               <View style={styles.button}>
-                <Text style={styles.buttonText}>{
-                  this.state.stageNew ? 'Cadastrar' : 'Acessar'
-                }</Text>
+                <Text style={styles.buttonText}>{this.state.stageNew ? 'Cadastrar' : 'Acessar'}</Text>
               </View>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity style={{padding: 10}} 
+          onPress={() => this.setState({stageNew: !this.state.stageNew})}>
+            <Text style={styles.buttonText}>
+            {this.state.stageNew ? 'Já possui conta?' : 'Não possui conta?'}
+            </Text>
+          </TouchableOpacity>
         </ImageBackground>
     )
   }
