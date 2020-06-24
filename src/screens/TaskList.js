@@ -16,6 +16,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage'
 
 import todayImage from '../../assets/imgs/today.jpg';
+import tomorrowImage from '../../assets/imgs/tomorrow.jpg';
+import weekImage from '../../assets/imgs/week.jpg';
+import monthImage from '../../assets/imgs/month.jpg';
 import commonStyles from '../commonStyles';
 import Task from '../components/Task';
 import AddTask from './AddTask';
@@ -96,7 +99,6 @@ export default class TaskList extends Component {
     }
 }
 
-
   deleteTask = async (taskId) =>{
     try{
       await axios.delete(`${server}/tasks/${taskId}`)
@@ -106,6 +108,22 @@ export default class TaskList extends Component {
     }
   }
 
+  getImage = () => {
+    switch(this.props.daysAhead){
+      case 0: return todayImage
+      case 1: return tomorrowImage
+      case 7: return weekImage
+      default: return monthImage
+    }
+  }
+  getColor = () => {
+    switch(this.props.daysAhead){
+      case 0: return commonStyles.colors.today
+      case 1: return commonStyles.colors.tomorrow
+      case 7: return commonStyles.colors.week
+      default: return commonStyles.colors.month
+    }
+  }
   render() {
     const hoje = moment()
       .locale('pt-br')
@@ -115,7 +133,7 @@ export default class TaskList extends Component {
         <AddTask isVisible={this.state.showAddTask} 
         onCancel={() => this.setState({showAddTask: false})}
         onSave={this.addTask}/>
-        <ImageBackground source={todayImage} style={styles.backgound}>
+        <ImageBackground source={this.getImage()} style={styles.backgound}>
           <View style={styles.iconBar}>
           <TouchableOpacity onPress={this.toggleFilter}>
               <Icon onPress={() => this.props.navigation.openDrawer()} name={'bars'}
@@ -145,7 +163,8 @@ export default class TaskList extends Component {
             )}
           />
         </View>
-        <TouchableOpacity style={styles.addButton} 
+        <TouchableOpacity style={[styles.addButton,
+         {backgroundColor: this.getColor()}]} 
         onPress={()=> this.setState({showAddTask:true})}
         activeOpacity={0.7}>
           <Icon name='plus' size={20} color={commonStyles.colors.secondary}/>
@@ -196,7 +215,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: commonStyles.colors.today,
     alignItems: 'center',
     justifyContent: 'center',
   },
